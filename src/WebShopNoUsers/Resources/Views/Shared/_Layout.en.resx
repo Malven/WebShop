@@ -144,4 +144,7 @@
   <data name="Search products.." xml:space="preserve">
     <value>Search products..</value>
   </data>
+  <data name="Translations" xml:space="preserve">
+    <value>Translations</value>
+  </data>
 </root>

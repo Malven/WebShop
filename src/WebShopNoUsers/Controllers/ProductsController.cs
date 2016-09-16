@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebShopNoUsers.Models;
+using System.Globalization;
+using WebShopNoUsers.ViewModels;
+using WebShopNoUsers.Classes;
 
 namespace WebShopNoUsers.Controllers
 {
@@ -21,13 +24,14 @@ namespace WebShopNoUsers.Controllers
         // GET: Products
         public async Task<IActionResult> Index(string id)
         {
-            var webShopRepository = _context.Products.Include( p => p.ProductCategory );
+            var query = QueryFactory.Query.GetAllProducts(_context);
+
             if( !string.IsNullOrEmpty( id ) ) {
-                var temp2 = from p in webShopRepository select p;
+                var temp2 = from p in query select p;
                 temp2 = temp2.Where( x => x.ProductName.Contains( id ) );
                 return View( await temp2.ToListAsync() );
             } else
-                return View( await webShopRepository.ToListAsync() );
+                return View( await query.ToListAsync() );
         }
 
         // GET: Products/Details/5
@@ -38,19 +42,19 @@ namespace WebShopNoUsers.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductId == id);
+            var product = QueryFactory.Query.GetProduct(_context, id).FirstOrDefault();
+            
             if (product == null)
             {
                 return NotFound();
-            }
-
+            }        
             return View(product);
         }
 
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryId");
+            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryName");
             return View();
         }
 
@@ -59,15 +63,21 @@ namespace WebShopNoUsers.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Description,Price,ProductCategoryId,ProductName")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductDescription,ProductPrice,ProductCategoryId,ProductName")] ProductViewModel pvm)
         {
+            var product = new Product();
+            product.ProductId = pvm.ProductId;
+            product.ProductCategoryId = pvm.ProductCategoryId;
+            product.ProductCategory = pvm.ProductCategory;
+
             if (ModelState.IsValid)
             {
                 _context.Add(product);
+                _context.Add( pvm );
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryId", product.ProductCategoryId);
+            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryName", product.ProductCategoryId);
             return View(product);
         }
 
@@ -84,7 +94,7 @@ namespace WebShopNoUsers.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryId", product.ProductCategoryId);
+            ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryName", product.ProductCategoryId);
             return View(product);
         }
 

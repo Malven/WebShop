@@ -144,4 +144,7 @@
   <data name="Search products.." xml:space="preserve">
     <value>Sök produkter..</value>
   </data>
+  <data name="Translations" xml:space="preserve">
+    <value>Översättningar</value>
+  </data>
 </root>

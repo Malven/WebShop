@@ -1,4 +1,4 @@
-@model IEnumerable<WebShopNoUsers.Models.Product>
+@model IEnumerable<WebShopNoUsers.ViewModels.ProductViewModel>
 
 @using Microsoft.AspNetCore.Mvc.Localization
 
@@ -22,8 +22,8 @@
                 </div>
                 <div class="panel-body">
                     <img src="http://dummyimage.com/200/334455/fff.png" class="img-thumbnail center-block" />
-                    <h4>@Html.DisplayNameFor( model => model.Price ): @Html.DisplayFor( modelItem => item.Price )</h4>
-                    <h4>@Html.DisplayNameFor( model => model.Description ): @Html.DisplayFor( modelItem => item.Description)</h4>
+                    <h4>@Html.DisplayNameFor( model => model.ProductPrice ): @Html.DisplayFor( modelItem => item.ProductPrice )</h4>
+                    <h4>@Html.DisplayNameFor( model => model.ProductDescription ): @Html.DisplayFor( modelItem => item.ProductDescription)</h4>
                     <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ProductId">@Localizer[ "Edit" ]</a>
                     <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ProductId">@Localizer[ "Details" ]</a>
                     <a class="btn btn-warning" asp-action="Delete" asp-route-id="@item.ProductId">@Localizer[ "Delete" ]</a>
