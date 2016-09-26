@@ -10,20 +10,13 @@ namespace WebShopNoUsers.Classes
 {
     public class QueryFactory
     {
-        private static QueryFactory _query;
+        private WebShopRepository _context;
 
-        public QueryFactory() {
+        public QueryFactory(WebShopRepository context) {
+            _context = context;
         }
 
-        public static QueryFactory Query {
-            get {
-                if( _query == null )
-                    _query = new QueryFactory();
-                return _query;
-            }
-        }
-
-        public IQueryable<ProductViewModel> GetAllProducts( WebShopRepository _context ) {
+        public IQueryable<ProductViewModel> GetAllProducts() {
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on
                         new { p.ProductId, Second = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName }
@@ -34,12 +27,13 @@ namespace WebShopNoUsers.Classes
                             ProductDescription = pt.ProductDescription,
                             ProductCategoryId = p.ProductCategoryId,
                             ProductCategory = p.ProductCategory,
-                            ProductPrice = pt.ProductPrice
+                            ProductPrice = pt.ProductPrice,
+                            Language = pt.Language
                         };
             return query;
         }
 
-        public IQueryable<ProductViewModel> GetProduct( WebShopRepository _context, int? id ) {
+        public IQueryable<ProductViewModel> GetProduct( int? id ) {
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on
                         new { p.ProductId, Second = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName }
@@ -51,9 +45,18 @@ namespace WebShopNoUsers.Classes
                             ProductDescription = pt.ProductDescription,
                             ProductCategoryId = p.ProductCategoryId,
                             ProductCategory = p.ProductCategory,
-                            ProductPrice = pt.ProductPrice
+                            ProductPrice = pt.ProductPrice,
+                            Language = pt.Language
+                            
                         };
             return query;
+        }
+
+        public ProductTranslation GetTranslation(int id ) {
+            var query = from pt in _context.ProductTranslations
+                        where pt.ProductId == id
+                        select pt;
+            return query.SingleOrDefault();
         }
     }
 }
