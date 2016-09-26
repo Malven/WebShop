@@ -1,4 +1,4 @@
-@model WebShopNoUsers.Models.Product
+@model WebShopNoUsers.ViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,16 +11,16 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.ProductDescription)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.ProductDescription )
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.ProductPrice )
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.ProductPrice )
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.ProductName)
@@ -28,9 +28,26 @@
         <dd>
             @Html.DisplayFor(model => model.ProductName)
         </dd>
+        <dt>
+            @Html.DisplayNameFor( model => model.ProductCategory )
+        </dt>
+        <dd>
+            @Html.DisplayFor( model => model.ProductCategory.ProductCategoryName )
+        </dd>
+        <dt>
+            Translations
+        </dt>
+        <dd>
+            <p>
+                @foreach( var item in ViewBag.Translations ) {
+                    @item
+                }
+            </p>
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ProductId">Edit</a> |
+    <a asp-action="AddTranslation" asp-route-id="@Model.ProductId">Add Translation</a> |
     <a asp-action="Index">Back to List</a>
 </div>

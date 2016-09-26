@@ -1,5 +1,8 @@
-@model WebShopNoUsers.Models.Product
+@model WebShopNoUsers.ViewModels.ProductViewModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = "Edit";
 }
@@ -13,17 +16,17 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="ProductId" />
                     <div class="form-group">
-                        <label asp-for="Description" class="col-md-2 control-label"></label>
+                        <label asp-for="ProductDescription" class="col-md-2 control-label"></label>
                         <div class="col-md-10">
-                            <input asp-for="Description" class="form-control" />
-                            <span asp-validation-for="Description" class="text-danger" />
+                            <input asp-for="ProductDescription" class="form-control" />
+                            <span asp-validation-for="ProductDescription" class="text-danger" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Price" class="col-md-2 control-label"></label>
+                        <label asp-for="ProductPrice" class="col-md-2 control-label"></label>
                         <div class="col-md-10">
-                            <input asp-for="Price" class="form-control" />
-                            <span asp-validation-for="Price" class="text-danger" />
+                            <input asp-for="ProductPrice" class="form-control" />
+                            <span asp-validation-for="ProductPrice" class="text-danger" />
                         </div>
                     </div>
                     <div class="form-group">

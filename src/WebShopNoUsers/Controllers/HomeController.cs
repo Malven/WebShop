@@ -6,11 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using WebShopNoUsers.Classes;
+using WebShopNoUsers.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebShopNoUsers.Controllers
 {
-    public class HomeController : Controller
-    {
+    public class HomeController : Controller {
+        private readonly WebShopRepository _context;
+        private QueryFactory queryFactory;
+
+        public HomeController( WebShopRepository context ) {
+            _context = context;
+            queryFactory = new QueryFactory( _context );
+        }
 
         [HttpPost]
         public IActionResult SetLanguage( string culture, string returnUrl ) {
@@ -23,10 +32,12 @@ namespace WebShopNoUsers.Controllers
             return LocalRedirect( returnUrl );
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var query = queryFactory.GetAllProducts();
+
             ViewData[ "culture" ] = CultureInfo.CurrentCulture.Name;
-            return View();
+            return View( await query.ToListAsync() );
         }
 
         public IActionResult About()

@@ -60,9 +60,12 @@ namespace WebShopNoUsers
             app.UseRequestLocalization( BuildLocalizationOptions() );
             app.UseMvc(routes =>
             {
+                //routes.MapRoute(
+                //    name: "culture",
+                //    template: "{language:regex(^[a-z]{{2}}(-[A-Z]{{2}})*$)}/{controller=Home}/{action=Index}/{id?}" );
                 routes.MapRoute(
-                    name: "culture",
-                    template: "{language:regex(^[a-z]{{2}}(-[A-Z]{{2}})*$)}/{controller=Home}/{action=Index}/{id?}" );
+                    name: "defaultLanguage",
+                    template: "{controller=Home}/{action=Index}/{id?}/{language}" );
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

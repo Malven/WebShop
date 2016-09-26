@@ -1,0 +1,77 @@
+@model WebShopNoUsers.ViewModels.ProductViewModel
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@using System.Globalization;
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("sv-SE")
+            };
+    LocOptions.Value.SupportedUICultures = supportedCultures;
+    var cultureItems = LocOptions.Value.SupportedUICultures
+.Select( c => new SelectListItem { Value = c.TwoLetterISOLanguageName, Text = c.DisplayName } )
+.ToList();
+}
+@{
+    ViewData["Title"] = "AddTranslation";
+}
+
+<h2>AddTranslation</h2>
+
+<form asp-action="AddTranslation">
+    <div class="form-horizontal">
+        <h4>ProductTranslation</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ProductId" />
+        <div class="form-group">
+            <label asp-for="ProductDescription" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProductDescription" class="form-control" />
+                <span asp-validation-for="ProductDescription" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProductName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProductPrice" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProductPrice" class="form-control" />
+                <span asp-validation-for="ProductPrice" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Language" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Language" class="form-control" asp-items="cultureItems"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
