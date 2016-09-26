@@ -46,6 +46,7 @@ namespace WebShopNoUsers.Controllers
             }
 
             var product = await queryFactory.GetProduct( id ).SingleOrDefaultAsync();
+            ViewData[ "Translations" ] = queryFactory.GetTranslationsForProduct( id ).ToList();
             
             if (product == null)
             {
@@ -126,7 +127,7 @@ namespace WebShopNoUsers.Controllers
                 try
                 {
                     var product = await _context.Products.SingleOrDefaultAsync( m => m.ProductId == id );
-                    var pt = queryFactory.GetTranslation( id );
+                    var pt = queryFactory.GetTranslationForProduct( id );
 
                     pt.ProductDescription = pvm.ProductDescription;
                     pt.ProductName = pvm.ProductName;
@@ -183,10 +184,10 @@ namespace WebShopNoUsers.Controllers
 
             if( ModelState.IsValid ) {
                 try {
-                    if(!TranslationExists(id, pvm.Language ) ) {
-                        RedirectToAction( "Index" );
+                    if(TranslationExists(id, pvm.Language ) ) {
+                        return RedirectToAction( "Index" );
                     }
-                    var pt = queryFactory.GetTranslation( id );
+                    var pt = queryFactory.GetTranslationForProduct( id );
 
                     pt.ProductDescription = pvm.ProductDescription;
                     pt.ProductName = pvm.ProductName;

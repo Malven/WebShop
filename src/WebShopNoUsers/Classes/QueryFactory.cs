@@ -52,11 +52,18 @@ namespace WebShopNoUsers.Classes
             return query;
         }
 
-        public ProductTranslation GetTranslation(int id ) {
+        public ProductTranslation GetTranslationForProduct(int id ) {
             var query = from pt in _context.ProductTranslations
                         where pt.ProductId == id
                         select pt;
             return query.SingleOrDefault();
+        }
+
+        public IQueryable<string> GetTranslationsForProduct( int? id ) {
+            var query = from pt in _context.ProductTranslations
+                        where pt.ProductId == id
+                        select pt.Language;
+            return query;
         }
     }
 }
