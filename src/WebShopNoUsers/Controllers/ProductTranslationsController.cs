@@ -63,15 +63,15 @@ namespace WebShopNoUsers.Controllers
             return View(productTranslation);
         }
 
-        // GET: ProductTranslations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: ProductTranslations/Edit/5/Language
+        public async Task<IActionResult> Edit(int? id, string language)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id);
+            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id && m.Language == language);
             if (productTranslation == null)
             {
                 return NotFound();
