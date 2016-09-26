@@ -25,14 +25,14 @@ namespace WebShopNoUsers.Controllers
         }
 
         // GET: ProductTranslations/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string language)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id);
+            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id && m.Language == language);
             if (productTranslation == null)
             {
                 return NotFound();
@@ -115,14 +115,14 @@ namespace WebShopNoUsers.Controllers
         }
 
         // GET: ProductTranslations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string language)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id);
+            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id && m.Language == language);
             if (productTranslation == null)
             {
                 return NotFound();
@@ -134,9 +134,9 @@ namespace WebShopNoUsers.Controllers
         // POST: ProductTranslations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string language)
         {
-            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id);
+            var productTranslation = await _context.ProductTranslations.SingleOrDefaultAsync(m => m.ProductId == id && m.Language == language);
             _context.ProductTranslations.Remove(productTranslation);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
