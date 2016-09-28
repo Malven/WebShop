@@ -35,7 +35,10 @@ namespace WebShopNoUsers.Controllers
         public async Task<IActionResult> Index()
         {
             var query = queryFactory.GetAllProducts();
-
+            var cart = ShoppingCart.GetCart( HttpContext );
+            var cartItems = cart.GetCartItems();
+            cart.EmptyCart();
+            cartItems = cart.GetCartItems();
             ViewData[ "culture" ] = CultureInfo.CurrentCulture.Name;
             return View( await query.ToListAsync() );
         }

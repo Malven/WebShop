@@ -6,16 +6,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using WebShopNoUsers.Classes;
 
 namespace WebShopNoUsers.Models
 {
     public partial class ShoppingCart
     {
         WebShopRepository repo;
+        QueryFactory qf;
         string shoppingCartUserId { get; set; }
 
         public ShoppingCart(HttpContext context) {
             repo = context.RequestServices.GetService( typeof( WebShopRepository ) ) as WebShopRepository;
+            qf = new QueryFactory(repo);
         }
 
         public static ShoppingCart GetCart(HttpContext context ) {
@@ -91,7 +94,27 @@ namespace WebShopNoUsers.Models
             return total ?? 0;
         }
 
+        public int CreateOrder(Order order ) {
+            decimal orderTotal = 0;
 
+            var cartItems = GetCartItems();
+            foreach( var item in cartItems ) {
+                ProductTranslation pt = qf.GetTranslationForProduct( item.ItemId );
+                var orderDetail = new OrderDetail {
+                    OrderId = order.OrderId,
+                    UnitPrice = (decimal)pt.ProductPrice,
+                    ProductId = pt.ProductId,
+                    Quantity = item.Count
+                };
+
+                orderTotal += (decimal)( item.Count * pt.ProductPrice );
+                repo.OrderDetails.Add( orderDetail );
+            }
+            order.Total = orderTotal;
+            repo.SaveChanges();
+            EmptyCart();
+            return order.OrderId;
+        }
 
         public string GetCartId( HttpContext context ) {
             if( context.Request.Cookies[ "cart" ] != null ) {
