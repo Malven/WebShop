@@ -27,9 +27,7 @@ namespace WebShopNoUsers.Migrations
 
                     b.Property<DateTime>("DateCreated");
 
-                    b.Property<int>("ItemId");
-
-                    b.Property<int?>("ProductId");
+                    b.Property<int>("ProductId");
 
                     b.HasKey("CartId");
 
@@ -145,7 +143,8 @@ namespace WebShopNoUsers.Migrations
                 {
                     b.HasOne("WebShopNoUsers.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WebShopNoUsers.Models.OrderDetail", b =>
