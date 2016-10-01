@@ -54,7 +54,7 @@ namespace WebShopNoUsers.Classes
 
         public ProductTranslation GetTranslationForProduct(int id ) {
             var query = from pt in _context.ProductTranslations
-                        where pt.ProductId == id
+                        where pt.ProductId == id && pt.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
                         select pt;
             return query.SingleOrDefault();
         }

@@ -82,7 +82,7 @@ namespace WebShopNoUsers.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(product);
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
                 pt.ProductId = product.ProductId;
                 _context.Add( pt );
                 await _context.SaveChangesAsync();
@@ -188,12 +188,12 @@ namespace WebShopNoUsers.Controllers
                         return RedirectToAction( "Index" );
                     }
                     var pt = queryFactory.GetTranslationForProduct( id );
-
+                    Product p = _context.Products.FirstOrDefault( x => x.ProductId == id );
                     pt.ProductDescription = pvm.ProductDescription;
                     pt.ProductName = pvm.ProductName;
                     pt.ProductPrice = pvm.ProductPrice;
                     pt.Language = pvm.Language;
-                    
+                    p.Translations.Add( pt );
                     _context.Add( pt );
                     await _context.SaveChangesAsync();
                 } catch( DbUpdateConcurrencyException ) {
@@ -232,9 +232,9 @@ namespace WebShopNoUsers.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductId == id);
-            var pt = await _context.ProductTranslations.SingleOrDefaultAsync( m => m.ProductId == product.ProductId );
+            List<ProductTranslation> pts = await _context.ProductTranslations.Where( m => m.ProductId == product.ProductId ).ToListAsync();
             _context.Products.Remove(product);
-            _context.ProductTranslations.Remove( pt );
+            _context.ProductTranslations.RemoveRange( pts );
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

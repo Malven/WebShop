@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using WebShopNoUsers.Classes;
+using WebShopNoUsers.ViewModels;
 
 namespace WebShopNoUsers.Models
 {
@@ -41,7 +42,8 @@ namespace WebShopNoUsers.Models
                     ItemId = product.ProductId,
                     CartUserId = shoppingCartUserId,
                     Count = 1,
-                    DateCreated = DateTime.Now
+                    DateCreated = DateTime.Now,
+                    Product = repo.Products.FirstOrDefault( x => x.ProductId == product.ProductId )
                 };
                 repo.Carts.Add( cartItem );
             }
@@ -99,18 +101,21 @@ namespace WebShopNoUsers.Models
 
             var cartItems = GetCartItems();
             foreach( var item in cartItems ) {
-                ProductTranslation pt = qf.GetTranslationForProduct( item.ItemId );
+                ProductViewModel pvm = qf.GetProduct( item.ItemId ).FirstOrDefault();
                 var orderDetail = new OrderDetail {
                     OrderId = order.OrderId,
-                    UnitPrice = (decimal)pt.ProductPrice,
-                    ProductId = pt.ProductId,
-                    Quantity = item.Count
+                    UnitPrice = (decimal)pvm.ProductPrice,
+                    ProductId = pvm.ProductId,
+                    Quantity = item.Count,
+                    Product = repo.Products.FirstOrDefault(x => x.ProductId == item.ItemId),
+                    Order = order
                 };
 
-                orderTotal += (decimal)( item.Count * pt.ProductPrice );
+                orderTotal += (decimal)( item.Count * pvm.ProductPrice );
                 repo.OrderDetails.Add( orderDetail );
             }
             order.Total = orderTotal;
+            repo.Orders.Add( order );
             repo.SaveChanges();
             EmptyCart();
             return order.OrderId;

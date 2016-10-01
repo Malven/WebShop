@@ -35,12 +35,34 @@ namespace WebShopNoUsers.Controllers
         public async Task<IActionResult> Index()
         {
             var query = queryFactory.GetAllProducts();
-            var cart = ShoppingCart.GetCart( HttpContext );
-            var cartItems = cart.GetCartItems();
-            cart.EmptyCart();
-            cartItems = cart.GetCartItems();
+            //var cart = ShoppingCart.GetCart( HttpContext );
+            //cart.AddToCart( new Product { ProductId = 1002, ProductCategoryId = 1 } );
+            //cart.AddToCart( new Product { ProductId = 1002, ProductCategoryId = 1 } );
+            //cart.AddToCart( new Product { ProductId = 1002, ProductCategoryId = 1 } );
+            //cart.AddToCart( new Product { ProductId = 1003, ProductCategoryId = 1 } );
+            //cart.AddToCart( new Product { ProductId = 1004, ProductCategoryId = 1 } );
+            //cart.RemoveFromCart( 1002 );
+            //var cartItems = cart.GetCartItems();
+            //cart.CreateOrder( new Order { FirstName = "Marcus", OrderDate = DateTime.Now } );
+            //cart.EmptyCart();
+            //cartItems = cart.GetCartItems();
             ViewData[ "culture" ] = CultureInfo.CurrentCulture.Name;
             return View( await query.ToListAsync() );
+        }
+
+        [HttpGet]
+        public IActionResult AddToCart(int id ) {
+            var cart = ShoppingCart.GetCart( HttpContext );
+            Product product = _context.Products.FirstOrDefault( x => x.ProductId == id );
+            cart.AddToCart(product );
+            return RedirectToAction( "Index" );
+        }
+
+        [HttpGet]
+        public IActionResult RemoveFromCart(int id ) {
+            var cart = ShoppingCart.GetCart( HttpContext );
+            cart.RemoveFromCart( id );
+            return RedirectToAction( "Index" );
         }
 
         public IActionResult About()

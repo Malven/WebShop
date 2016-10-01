@@ -70,6 +70,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        @await Component.InvokeAsync( "ShoppingCart" )
         <footer>
             <p>&copy; 2016 - BuyThatSh!t</p>
         </footer>

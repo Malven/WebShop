@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using System.Text.RegularExpressions;
+using WebShopNoUsers.Classes;
 
 namespace WebShopNoUsers
 {
@@ -35,6 +36,7 @@ namespace WebShopNoUsers
             var connection = @"Server=(localdb)\mssqllocaldb;Database=WebShop.Products;Trusted_Connection=True;";
             services.AddDbContext<WebShopRepository>( options => options.UseSqlServer( connection ) );
             services.AddLocalization( options => options.ResourcesPath = "Resources" );
+            services.AddTransient<ICartService, CartService>();
             services.AddMvc()
                 .AddViewLocalization( Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix )
                 .AddDataAnnotationsLocalization();
