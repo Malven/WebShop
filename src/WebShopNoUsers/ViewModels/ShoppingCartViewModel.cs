@@ -16,5 +16,7 @@ namespace WebShopNoUsers.ViewModels
         }
 
         public List<Cart> Carts { get; set; }
+        public decimal CartTotal { get; set; }
+        public string CurrentLanguage { get; set; }
     }
 }

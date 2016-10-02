@@ -6,5 +6,6 @@
 @model WebShopNoUsers.ViewModels.ShoppingCartViewModel
 
 @foreach( var item in Model.Carts ) {
-    <p>@item.ItemId - @item.Count, @item.Product.Translations.FirstOrDefault(x => x.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).ProductName <a class="btn btn-primary" asp-action="RemoveFromCart" asp-route-id="@item.ItemId">@Localizer["Remove from cart"]</a></p>
+    <p>@item.ItemId - @item.Count, @item.Product.Translations.FirstOrDefault(x => x.Language == Model.CurrentLanguage).ProductName - @item.Product.Translations.FirstOrDefault( x => x.Language == Model.CurrentLanguage ).ProductPrice <a class="btn btn-primary" asp-action="RemoveFromCart" asp-route-id="@item.ItemId">@Localizer["Remove from cart"]</a></p>
 }
+    <p>Order Total: @Model.CartTotal</p>

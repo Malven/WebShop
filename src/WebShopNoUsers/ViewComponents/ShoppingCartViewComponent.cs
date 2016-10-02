@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using WebShopNoUsers.Classes;
@@ -19,17 +20,18 @@ namespace WebShopNoUsers.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync() {
             string cartUserId = _service.GetCartUserId( HttpContext );
-            var carts = await _service.GetCarts( cartUserId );
+            decimal cartTotal = 0;
             ShoppingCartViewModel vm = new ShoppingCartViewModel(HttpContext);
-            vm.Carts = carts;
+            vm.CurrentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            vm.Carts = await _service.GetCarts( cartUserId );
             foreach( var item in vm.Carts ) {
                 item.Product = vm.repo.Products.FirstOrDefault( x => x.ProductId == item.ItemId );
-                List<ProductTranslation> pts = vm.repo.ProductTranslations.Where( x => x.ProductId == item.ItemId ).ToList();
+                ProductTranslation pt = vm.repo.ProductTranslations.FirstOrDefault( x => x.ProductId == item.ItemId && x.Language == vm.CurrentLanguage);
                 item.Product.Translations = new List<ProductTranslation>();
-                foreach( var pt in pts ) {
-                    item.Product.Translations.Add( pt );
-                }
+                item.Product.Translations.Add( pt );
+                cartTotal += (decimal)(item.Count * item.Product.Translations.FirstOrDefault(x => x.Language == vm.CurrentLanguage).ProductPrice);
             }
+            vm.CartTotal = cartTotal;
             return View( vm );
         }
     }
