@@ -11,19 +11,24 @@
     </div>
 </div>
 <div class="row">
-    @foreach( var item in Model ) {
-        <div class="col-md-3">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h4>@Html.DisplayFor( modelItem => item.ProductName )</h4>
-                </div>
-                <div class="panel-body">
-                    <img src="http://dummyimage.com/200/334455/fff.png" class="img-thumbnail center-block" />
-                    <h4>@Html.DisplayNameFor( model => model.ProductPrice ): @Html.DisplayFor( modelItem => item.ProductPrice )</h4>
-                    <h4>@Html.DisplayNameFor( model => model.ProductDescription ): @Html.DisplayFor( modelItem => item.ProductDescription )</h4>
-                    <a class="btn btn-primary" asp-action="AddToCart" asp-route-id="@item.ProductId">@Localizer[ "Add to cart" ]</a>
+    <div class="col-lg-9">
+        @foreach( var item in Model ) {
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4>@Html.DisplayFor( modelItem => item.ProductName )</h4>
+                    </div>
+                    <div class="panel-body">
+                        <img src="http://dummyimage.com/200/334455/fff.png" class="img-thumbnail center-block" />
+                        <h4>@Html.DisplayNameFor( model => model.ProductPrice ): @Html.DisplayFor( modelItem => item.ProductPrice )</h4>
+                        <h4>@Html.DisplayNameFor( model => model.ProductDescription ): @Html.DisplayFor( modelItem => item.ProductDescription )</h4>
+                        <a class="btn btn-primary" asp-action="AddToCart" asp-route-id="@item.ProductId">@Localizer[ "Add to cart" ]</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
+    <div class="col-lg-3">
+        @await Component.InvokeAsync( "ShoppingCart" )
+    </div>
 </div>
