@@ -41,6 +41,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">@Localizer["About"]</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">@Localizer["Contact"]</a></li>
+                    <li><a asp-area="" asp-controller="ExternalApi" asp-action="Index">@Localizer[ "Ext. Api (B.Net Tag)" ]</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">@Localizer["Administration"] <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -60,7 +61,7 @@
                       asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path"
                       method="post" class="navbar-form navbar-right" role="form">
                     <div class="form-group">
-                        @Localizer[ "Language" ]:<button class="btn btn-primary" type="submit" name="culture" value="en-US">EN</button>
+                        @Localizer[ "Language" ]: <button class="btn btn-primary" type="submit" name="culture" value="en-US">EN</button>
                         <button class="btn btn-primary" type="submit" name="culture" value="sv-SE">SV</button>
                     </div>
                 </form>           

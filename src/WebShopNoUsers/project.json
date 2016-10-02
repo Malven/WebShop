@@ -38,7 +38,9 @@
     "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.AspNetCore.Localization": "1.0.0-*",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
-    "Microsoft.Extensions.Localization": "1.0.0-*"
+    "Microsoft.Extensions.Localization": "1.0.0-*",
+    "Newtonsoft.Json": "9.0.2-beta1",
+    "System.Runtime.InteropServices.WindowsRuntime": "4.0.0"
   },
 
   "tools": {
