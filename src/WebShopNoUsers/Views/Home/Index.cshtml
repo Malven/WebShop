@@ -22,7 +22,7 @@
                         <img src="http://dummyimage.com/200/334455/fff.png" class="img-thumbnail center-block" />
                         <h4>@Html.DisplayNameFor( model => model.ProductPrice ): @Html.DisplayFor( modelItem => item.ProductPrice )</h4>
                         <h4>@Html.DisplayNameFor( model => model.ProductDescription ): @Html.DisplayFor( modelItem => item.ProductDescription )</h4>
-                        <a class="btn btn-primary" asp-action="AddToCart" asp-route-id="@item.ProductId">@Localizer[ "Add to cart" ]</a>
+                        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.ProductId">@Localizer[ "Add to cart" ]</a>
                     </div>
                 </div>
             </div>

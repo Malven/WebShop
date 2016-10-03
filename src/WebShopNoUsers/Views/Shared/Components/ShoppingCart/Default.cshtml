@@ -20,7 +20,7 @@
             <td>@item.Product.Translations.FirstOrDefault( x => x.Language == Model.CurrentLanguage ).ProductName</td>
             <td>@item.Count</td>
             <td>@item.Product.Translations.FirstOrDefault( x => x.Language == Model.CurrentLanguage ).ProductPrice</td>
-            <td><a class="text-danger" asp-action="RemoveFromCart" asp-route-id="@item.ItemId">@Localizer[ "remove" ]</a></td>
+            <td><a class="text-danger" asp-controller="ShoppingCart" asp-action="RemoveFromCart" asp-route-id="@item.ItemId">@Localizer[ "remove" ]</a></td>
         </tr>
     }
     </tbody>
@@ -33,4 +33,4 @@
         </tr>
     </tfoot>
 </table>
-<a class="btn btn-primary" asp-action="CreateOrder">Buy</a>
+<a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="Checkout">Buy</a>
