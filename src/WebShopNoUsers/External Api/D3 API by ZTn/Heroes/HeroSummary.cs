@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using ZTn.BNet.BattleNet;
 using ZTn.BNet.D3.Helpers;
 
@@ -65,9 +66,10 @@ namespace ZTn.BNet.D3.Heroes
 
         #endregion
 
-        public Hero GetHeroFromBattleTag(BattleTag battleTag)
+        public async Task<Hero> GetHeroFromBattleTag(BattleTag battleTag)
         {
-            return Hero.CreateFromHeroId(battleTag, Id);
+            return await Hero.CreateFromHeroIdAsync( battleTag, Id );
+            //return Hero.CreateFromHeroId(battleTag, Id);
         }
 
         #region >> Object

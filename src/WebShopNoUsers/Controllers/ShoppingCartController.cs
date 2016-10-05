@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WebShopNoUsers.Controllers
 {
@@ -16,8 +17,7 @@ namespace WebShopNoUsers.Controllers
     {
         private readonly WebShopRepository _context;
 
-        private string eid = "5160";
-        private string sharedSecret = "tE94QeKzSdUVSGe";
+        private string eid = "7772";
         
 
         public ShoppingCartController( WebShopRepository context ) {
@@ -44,23 +44,23 @@ namespace WebShopNoUsers.Controllers
             return RedirectToAction( "Index", "Home" );
         }
 
-        public async Task<IActionResult> Checkout() {
-            WebShopRepository repo = HttpContext.RequestServices.GetService( typeof( WebShopRepository ) ) as WebShopRepository;
+        public IActionResult Checkout() {
             var myCart = ShoppingCart.GetCart( HttpContext ).GetCartItems();
             var cartItems = new List<Dictionary<string, object>>();
             foreach( var item in myCart ) {
-                item.Product = repo.Products.FirstOrDefault( x => x.ProductId == item.ItemId );
+                item.Product = _context.Products.FirstOrDefault( x => x.ProductId == item.ItemId );
                 item.Product.Translations = new List<ProductTranslation>();
-                item.Product.Translations.Add( repo.ProductTranslations.FirstOrDefault( x => x.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName ) );
+                item.Product.Translations.Add( _context.ProductTranslations.Single( x => x.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName && x.ProductId == item.ItemId ));
                 cartItems.Add( new Dictionary<string, object> {
-                    {"reference", item.ItemId },
+                    {"reference", item.ItemId.ToString() },
                     {"name", item.Product.Translations.FirstOrDefault().ProductName },
                     { "quantity", item.Count },
-                    { "unit_price", item.Product.Translations.FirstOrDefault().ProductPrice },
+                    { "unit_price", (int)(item.Product.Translations.FirstOrDefault().ProductPrice*100) },
                     { "discount_rate", 0 },
                     { "tax_rate", 2500 }
                 } );
             }
+
             cartItems.Add( new Dictionary<string, object> {
                 { "type", "shipping_fee" },
                 { "reference", "SHIPPING" },
@@ -79,16 +79,16 @@ namespace WebShopNoUsers.Controllers
             var merchant = new Dictionary<string, object>
                 {
                     { "id", eid },
-                    { "back_to_store_uri", "http://127.0.0.1/" },
-                    { "terms_uri", "http://127.0.0.1/" },
+                    { "back_to_store_uri", "http://localhost:5609/" },
+                    { "terms_uri", "http://localhost:5609/" },
                     {
                         "checkout_uri",
-                        "https://example.com/checkout.aspx"
+                        "http://localhost:5609/ShoppingCart/Checkout/"
                     },
                     {
                         "confirmation_uri",
-                        "https://example.com/thankyou.aspx" +
-                        "?klarna_order_id={checkout.order.id}"
+                        "http://localhost:5609/ShoppingCart/Confirmation/" +
+                        "{checkout.order.id}"
                     },
                     {
                         "push_uri",
@@ -102,11 +102,23 @@ namespace WebShopNoUsers.Controllers
             data.Add( "locale", "sv-se" );
             data.Add( "merchant", merchant );
 
-            WebShopNoUsers.Classes.Klarna k = new Classes.Klarna();
-            var temp = k.CreateOrder( JsonConvert.SerializeObject( data ) );
+            Klarna k = new Klarna();
+            var temp = k.CreateOrder( JsonConvert.SerializeObject(data));
 
             //TODO httpclient mot klarna och få tillbaka en order
+            var temp2 = JsonConvert.DeserializeObject<JObject>( temp ).GetValue("gui");
+            ViewBag.Snippet = temp2[ "snippet" ];
+            return View();
+        }
 
+        public IActionResult Confirmation(string id ) {
+
+            Klarna k = new Klarna();
+            string temp = k.GetOrder( id );
+            var gui = JsonConvert.DeserializeObject<JObject>( temp ).GetValue( "gui" );
+            ViewBag.Snippet = gui[ "snippet" ];
+            var cart = ShoppingCart.GetCart( HttpContext );
+            cart.EmptyCart();
             return View();
         }
 

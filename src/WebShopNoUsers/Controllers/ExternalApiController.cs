@@ -7,6 +7,7 @@ using ZTn.BNet.BattleNet;
 using ZTn.BNet.D3.Careers;
 using ZTn.BNet.D3.Items;
 using ZTn.BNet.D3;
+using ZTn.BNet.D3.Heroes;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
