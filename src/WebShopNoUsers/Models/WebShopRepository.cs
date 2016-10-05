@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebShopNoUsers.Models
 {
-    public class WebShopRepository : DbContext
+    public class WebShopRepository : DbContext, IWebShopRepository
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }

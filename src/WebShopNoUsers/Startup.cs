@@ -37,6 +37,7 @@ namespace WebShopNoUsers
             services.AddDbContext<WebShopRepository>( options => options.UseSqlServer( connection ) );
             services.AddLocalization( options => options.ResourcesPath = "Resources" );
             services.AddTransient<ICartService, CartService>();
+            services.AddSingleton<IWebShopRepository, WebShopRepository>();
             services.AddMvc()
                 .AddViewLocalization( Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix )
                 .AddDataAnnotationsLocalization();

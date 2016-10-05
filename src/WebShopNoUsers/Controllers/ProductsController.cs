@@ -11,6 +11,7 @@ using WebShopNoUsers.ViewModels;
 using WebShopNoUsers.Classes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace WebShopNoUsers.Controllers
 {
@@ -19,9 +20,9 @@ namespace WebShopNoUsers.Controllers
         private readonly WebShopRepository _context;
         private QueryFactory queryFactory;
 
-        public ProductsController(WebShopRepository context)
+        public ProductsController(IWebShopRepository context)
         {
-            _context = context;
+            _context = context as WebShopRepository;
             queryFactory = new QueryFactory( _context ); 
         }
 
