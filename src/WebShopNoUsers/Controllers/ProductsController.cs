@@ -17,13 +17,18 @@ namespace WebShopNoUsers.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly WebShopRepository _context;
+        private WebShopRepository _context;
         private QueryFactory queryFactory;
 
         public ProductsController(IWebShopRepository context)
         {
             _context = context as WebShopRepository;
             queryFactory = new QueryFactory( _context ); 
+        }
+
+        //TODO: Ta bort
+        public async Task<IActionResult> Test() {
+            return View(_context.Products.ToList());
         }
 
         // GET: Products
@@ -83,7 +88,6 @@ namespace WebShopNoUsers.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(product);
-                //await _context.SaveChangesAsync();
                 pt.ProductId = product.ProductId;
                 _context.Add( pt );
                 await _context.SaveChangesAsync();
@@ -157,8 +161,7 @@ namespace WebShopNoUsers.Controllers
             ViewData["ProductCategoryId"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "ProductCategoryName", pvm.ProductCategoryId);
             return View(pvm);
         }
-
-        //TODO fix add translation
+        
         //Get: Products/AddTranslation/5
         public async Task<IActionResult> AddTranslation(int? id ) {
             if( id == null ) {

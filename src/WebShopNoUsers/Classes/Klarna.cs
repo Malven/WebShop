@@ -15,8 +15,7 @@ namespace WebShopNoUsers.Classes
 
 
         public string CreateOrder(string jsonData ) {
-
-
+            
             HttpClient _client = new HttpClient();
             HttpRequestMessage message = new HttpRequestMessage();
             message.RequestUri = new Uri( "https://checkout.testdrive.klarna.com/checkout/orders" );
@@ -44,7 +43,7 @@ namespace WebShopNoUsers.Classes
         }
 
         public string GetOrder(string id ) {
-            //hämta orders
+            //hämta ordern
             HttpClient _client = new HttpClient();
             HttpRequestMessage getMessage = new HttpRequestMessage();
             getMessage.RequestUri = new Uri( "https://checkout.testdrive.klarna.com/checkout/orders/"+id );
@@ -53,13 +52,16 @@ namespace WebShopNoUsers.Classes
             getMessage.Headers.Authorization = new AuthenticationHeaderValue( "Klarna", CreateAuthorization( sharedSecret ) );
 
             var getResponse = _client.SendAsync( getMessage ).Result;
-            var getResponseBody = getResponse.Content.ReadAsStringAsync().Result;
-            return getResponseBody;
+            if(getResponse.StatusCode == HttpStatusCode.OK ) {
+                var getResponseBody = getResponse.Content.ReadAsStringAsync().Result;
+                return getResponseBody;
+            } else {
+                return "Exception: " + new Exception().Message;
+            }
+            
         }
 
         private string CreateAuthorization( string data ) {
-            //base64(hex(sha256 (request_payload + shared_secret)))
-
             using( var algorithm = SHA256.Create() ) {
                 var bytes = Encoding.GetEncoding( "UTF-8" ).GetBytes( data );
                 var hash = algorithm.ComputeHash( bytes );

@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@model WebShopNoUsers.ViewModels.KlarnaViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
 
 @inject IViewLocalizer Localizer
 <div class="row">
@@ -8,6 +9,6 @@
 </div>
 <div class="row">
     <div class="col-lg-12">
-            @Html.Raw( ViewBag.Snippet)
+            @Model.Snippet
     </div>
 </div>

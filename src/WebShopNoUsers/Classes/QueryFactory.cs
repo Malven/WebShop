@@ -12,8 +12,8 @@ namespace WebShopNoUsers.Classes
     {
         private WebShopRepository _context;
 
-        public QueryFactory(WebShopRepository context) {
-            _context = context;
+        public QueryFactory(IWebShopRepository context) {
+            _context = context as WebShopRepository;
         }
 
         public IQueryable<ProductViewModel> GetAllProducts() {

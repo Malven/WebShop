@@ -10,25 +10,24 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WebShopNoUsers.ViewModels;
+using Microsoft.AspNetCore.Html;
 
-namespace WebShopNoUsers.Controllers
-{
-    public class ShoppingCartController : Controller
-    {
+namespace WebShopNoUsers.Controllers {
+    public class ShoppingCartController : Controller {
         private readonly WebShopRepository _context;
 
         private string eid = "7772";
-        
+
 
         public ShoppingCartController( WebShopRepository context ) {
             _context = context;
         }
 
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult AddToCart( int id ) {
             var cart = ShoppingCart.GetCart( HttpContext );
@@ -50,7 +49,7 @@ namespace WebShopNoUsers.Controllers
             foreach( var item in myCart ) {
                 item.Product = _context.Products.FirstOrDefault( x => x.ProductId == item.ItemId );
                 item.Product.Translations = new List<ProductTranslation>();
-                item.Product.Translations.Add( _context.ProductTranslations.Single( x => x.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName && x.ProductId == item.ItemId ));
+                item.Product.Translations.Add( _context.ProductTranslations.Single( x => x.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName && x.ProductId == item.ItemId ) );
                 cartItems.Add( new Dictionary<string, object> {
                     {"reference", item.ItemId.ToString() },
                     {"name", item.Product.Translations.FirstOrDefault().ProductName },
@@ -94,36 +93,39 @@ namespace WebShopNoUsers.Controllers
                         "push_uri",
                         "https://example.com/push.aspx" +
                         "?klarna_order_id={checkout.order.id}"
-                    }
+                    }                    
                 };
 
             data.Add( "purchase_country", "SE" );
             data.Add( "purchase_currency", "SEK" );
-            data.Add( "locale", "sv-se" );
             data.Add( "merchant", merchant );
+            if(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "sv" ) {
+                data.Add( "locale", "sv-se" );
+            } else {
+                data.Add( "locale", "en-us" );
+            }
 
             Klarna k = new Klarna();
-            var temp = k.CreateOrder( JsonConvert.SerializeObject(data));
+            var temp = k.CreateOrder( JsonConvert.SerializeObject( data ) );
 
-            //TODO httpclient mot klarna och få tillbaka en order
-            var temp2 = JsonConvert.DeserializeObject<JObject>( temp ).GetValue("gui");
-            ViewBag.Snippet = temp2[ "snippet" ];
-            return View();
+            var gui = JsonConvert.DeserializeObject<JObject>( temp ).GetValue( "gui" );
+            KlarnaViewModel kvm = new KlarnaViewModel();
+            kvm.Snippet = new HtmlString( gui[ "snippet" ].ToString() );
+            return View( kvm );
         }
 
-        public IActionResult Confirmation(string id ) {
-
+        public IActionResult Confirmation( string id ) {
             Klarna k = new Klarna();
             string temp = k.GetOrder( id );
             var gui = JsonConvert.DeserializeObject<JObject>( temp ).GetValue( "gui" );
-            ViewBag.Snippet = gui[ "snippet" ];
+            KlarnaViewModel kvm = new KlarnaViewModel();
+            kvm.Snippet = new HtmlString( gui[ "snippet" ].ToString() );
             var cart = ShoppingCart.GetCart( HttpContext );
             cart.EmptyCart();
-            return View();
+            return View( kvm );
         }
 
         private string CreateAuthorization( string data ) {
-            //base64(hex(sha256 (request_payload + shared_secret)))
 
             using( var algorithm = SHA256.Create() ) {
                 var hash = algorithm.ComputeHash( Encoding.UTF8.GetBytes( data ) );
